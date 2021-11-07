@@ -1,15 +1,15 @@
 # Конечный результат (*для пользователя*)
 ## Стандартное обновление либы на последнюю актуальную
 ```bash
-$ npx migrator --config <lib_name>
+npx migrator --config <lib_name>
 ```
 ## Миграция на конкретную версию либы
 ```bash
-$ npx migrator --config <lib_name> --move 3.0.0:4.0.0
+npx migrator --config <lib_name> --move 3.0.0:4.0.0
 ```
 ## Миграция с кастомным конфигом
 ```bash
-$ npx migrator --config ./migrator-configs
+npx migrator --config ./migrator-configs
 ```
 В папке `./migrator-configs` находится файлы конфигураций `yaml` кастомные `селекторы` и `правила`
 
