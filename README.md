@@ -29,10 +29,10 @@ npx migrator --config ./migrator-configs
 * селектор файла .component.html, *, .ts
 * селектор текста (конкретный тег button)
 
-# Rule
-rule - правило, по которому изменяется текст
+# Modificator
+modificator - правило, по которому изменяется текст
 
-типы rule:
+типы modificator:
 * простые:
   * `CHANGE find_str TO replace_str`
   * `DELETE find_str`
@@ -43,8 +43,14 @@ rule - правило, по которому изменяется текст
 ## Условие
 для каждого из типов rule можно добавить условие `IF expression`, `IF NOT expression`
 
+
+# Rule
+Rule - набор селекторов и модификаторов записанные в yaml файле
 ```yaml
+selector:
+  - FILE *.component.html
+  - TAG button
 rules:
-  - CHANGE [kind]="'primary'" TO [type]="'primary'" IF CONTAIN str
-  - ADD [kind]="'secondary'" IF NOT CONTAIN [kind]="'primary'"
+  - CHANGE [kind]="'primary'" TO [type]="'primary'"
+  - ADD [kind]="'secondary'"
 ```
