@@ -1,0 +1,6 @@
+selectors:
+  - FILE *.component.html
+  - TAG button
+rules:
+  - CHANGE [kind]="'primary'" TO [type]="'primary'"
+  - ADD [kind]="'secondary'"

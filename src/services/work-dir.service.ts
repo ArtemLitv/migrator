@@ -7,5 +7,7 @@ const __dirname = filePath.dirname(__filename);
 
 const pathToTest = '../../src/test-project';
 const WORK_DIR = join(__dirname, pathToTest);
+const CONFIG_DIR = join(WORK_DIR, 'migrator-config');
+const IGNORE_DIR = join(CONFIG_DIR, '.migratorignore');
 
-export { WORK_DIR };
+export { WORK_DIR, CONFIG_DIR, IGNORE_DIR };
