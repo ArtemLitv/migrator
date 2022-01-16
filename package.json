@@ -5,7 +5,7 @@
 	"description": "CLI util help migrate ui lib",
 	"main": "./dist/index.js",
 	"scripts": {
-		"start": "tsc; npm run start:dist",
+		"start": "tsc && npm run start:dist",
 		"start:dist": "node --experimental-specifier-resolution=node ./dist/index.js"
 	},
 	"repository": {
