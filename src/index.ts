@@ -8,10 +8,10 @@ import { WORK_DIR, IGNORE_DIR, CONFIG_DIR } from './services/work-dir.service';
 const main = async () => {
 	const ignoreFiles: string[] = await getIgnoreFiles();
 	const rule: Rule = await getRule();
-	runer({ filePath: WORK_DIR, ignoreFiles: ignoreFiles, rule: rule });
+	runner({ filePath: WORK_DIR, ignoreFiles: ignoreFiles, rule: rule });
 };
 
-const runer = async (config: RunnerConfig): Promise<void> => {
+const runner = async (config: RunnerConfig): Promise<void> => {
 	const { filePath, ignoreFiles, rule } = config;
 	const fileNames = await promises.readdir(filePath);
 
@@ -20,7 +20,7 @@ const runer = async (config: RunnerConfig): Promise<void> => {
 		const { fullFilePath, isDirectory } = await getFileInfo(filePath, fileName);
 		if (isDirectory) {
 			const newConfig = { ...config, filePath: fullFilePath };
-			runer(newConfig);
+			runner(newConfig);
 		} else {
 			// do selectors and rules
 			console.log(fullFilePath);
