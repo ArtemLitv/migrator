@@ -12,3 +12,7 @@ export interface RuleItem {
 	funcName: string;
 	rule: string;
 }
+
+export interface FullSelectorModificator {
+	[funcName: string]: (...args: any) => any;
+}

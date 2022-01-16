@@ -1,18 +1,25 @@
 import { promises } from 'fs';
 import { join } from 'path';
 import YAML from 'yaml';
-import { RowRule, Rule, RuleItem } from './models/rule';
+import { FullSelectorModificator, RowRule, Rule, RuleItem } from './models/rule';
 import { RunnerConfig } from './models/runner';
 import { WORK_DIR, IGNORE_DIR, CONFIG_DIR } from './services/work-dir.service';
 
 const main = async () => {
 	const ignoreFiles: string[] = await getIgnoreFiles();
+	// imports selectors and modificators
+	const selectors = await getSelectors();
 	const rule: Rule = await getRule();
-	runner({ filePath: WORK_DIR, ignoreFiles: ignoreFiles, rule: rule });
+	runner({
+		filePath: WORK_DIR,
+		ignoreFiles: ignoreFiles,
+		rule: rule,
+		selectors,
+	});
 };
 
 const runner = async (config: RunnerConfig): Promise<void> => {
-	const { filePath, ignoreFiles, rule } = config;
+	const { filePath, ignoreFiles, rule, selectors } = config;
 	const fileNames = await promises.readdir(filePath);
 
 	for (const fileName of fileNames) {
@@ -23,7 +30,8 @@ const runner = async (config: RunnerConfig): Promise<void> => {
 			runner(newConfig);
 		} else {
 			// do selectors and rules
-			console.log(fullFilePath);
+			const selectorName = rule.selectors[0].funcName;
+			selectors[selectorName](fileName);
 		}
 	}
 };
@@ -31,6 +39,11 @@ const runner = async (config: RunnerConfig): Promise<void> => {
 const getIgnoreFiles = async (): Promise<string[]> => {
 	return (await promises.readFile(IGNORE_DIR)).toString().split('\n');
 };
+
+
+const getSelectors = async (): Promise<FullSelectorModificator> => {
+	return (await import('./selectors/selectors')).default;
+}
 
 const getRule = async (): Promise<Rule> => {
 	const ruleFile = (await promises.readFile(join(CONFIG_DIR, 'rule.yaml'))).toString();
