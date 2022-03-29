@@ -10,6 +10,7 @@ const main = async () => {
 	// imports selectors and modificators
 	const selectors = await getSelectors();
 	const rule: Rule = await getRule();
+	console.log('>>', rule);
 	runner({
 		filePath: WORK_DIR,
 		ignoreFiles: ignoreFiles,
@@ -31,7 +32,8 @@ const runner = async (config: RunnerConfig): Promise<void> => {
 		} else {
 			// do selectors and rules
 			const selectorName = rule.selectors[0].funcName;
-			selectors[selectorName](fileName);
+			console.log('>>', fileName);
+			selectors[selectorName](rule, fileName);
 		}
 	}
 };
@@ -40,10 +42,9 @@ const getIgnoreFiles = async (): Promise<string[]> => {
 	return (await promises.readFile(IGNORE_DIR)).toString().split('\n');
 };
 
-
 const getSelectors = async (): Promise<FullSelectorModificator> => {
 	return (await import('./selectors/selectors')).default;
-}
+};
 
 const getRule = async (): Promise<Rule> => {
 	const ruleFile = (await promises.readFile(join(CONFIG_DIR, 'rule.yaml'))).toString();

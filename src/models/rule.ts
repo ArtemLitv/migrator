@@ -4,8 +4,12 @@ export interface RowRule {
 }
 
 export interface Rule {
-	selectors: RuleItem[];
+	selectors: Selector[];
 	rules: RuleItem[];
+}
+
+export interface Selector extends RuleItem {
+	current?: boolean;
 }
 
 export interface RuleItem {
