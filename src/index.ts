@@ -3,14 +3,16 @@ import { join } from 'path';
 import YAML from 'yaml';
 import { FullSelectorModificator, RowRule, Rule, RuleItem } from './models/rule';
 import { RunnerConfig } from './models/runner';
+import { clearLogger, log } from './services/logger.service';
 import { WORK_DIR, IGNORE_DIR, CONFIG_DIR } from './services/work-dir.service';
 
-const main = async () => {
+const main = async (): Promise<void> => {
+	clearLogger();
 	const ignoreFiles: string[] = await getIgnoreFiles();
 	// imports selectors and modificators
 	const selectors = await getSelectors();
 	const rule: Rule = await getRule();
-	console.log('>>', rule);
+	console.log('RULE =', rule);
 	runner({
 		filePath: WORK_DIR,
 		ignoreFiles: ignoreFiles,
@@ -31,9 +33,10 @@ const runner = async (config: RunnerConfig): Promise<void> => {
 			runner(newConfig);
 		} else {
 			// do selectors and rules
-			const selectorName = rule.selectors[0].funcName;
-			console.log('>>', fileName);
-			selectors[selectorName](rule, fileName);
+			const selectorName = rule.selectors[0].funcName; // FILE selector
+			const fileText = await getFileText(fullFilePath);
+			log(`File name: ${fileName}`);
+			await selectors[selectorName](rule, fileName, fileText);
 		}
 	}
 };
@@ -50,8 +53,9 @@ const getRule = async (): Promise<Rule> => {
 	const ruleFile = (await promises.readFile(join(CONFIG_DIR, 'rule.yaml'))).toString();
 	const rule: RowRule = YAML.parse(ruleFile);
 	const selectors: RuleItem[] =
-		rule.selectors?.map((selector) => ({
+		rule.selectors?.map((selector, index) => ({
 			funcName: selector.split(' ')[0],
+			current: index === 0,
 			rule: selector,
 		})) || [];
 
@@ -76,6 +80,10 @@ const getFileInfo = async (filePath: string, fileName: string): Promise<any> => 
 	const fileInfo = await promises.lstat(fullFilePath);
 	const isDirectory = fileInfo.isDirectory();
 	return { fullFilePath, isDirectory };
+};
+
+const getFileText = async (filePath: string): Promise<string> => {
+	return (await promises.readFile(filePath)).toString();
 };
 
 main().catch((error) => console.log(error));
