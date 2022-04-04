@@ -1,3 +1,5 @@
+export type anyFunction = (...args: any) => any;
+
 export interface RowRule {
 	selectors?: string[];
 	rules?: string[];
@@ -9,7 +11,7 @@ export interface Rule {
 }
 
 export interface Selector extends RuleItem {
-	current?: boolean;
+	current: boolean;
 }
 
 export interface RuleItem {
@@ -18,5 +20,5 @@ export interface RuleItem {
 }
 
 export interface FullSelectorModificator {
-	[funcName: string]: (...args: any) => any;
+	[key: string]: anyFunction | RegExp;
 }

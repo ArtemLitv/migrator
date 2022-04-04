@@ -1,7 +1,8 @@
-import { promises } from 'fs';
+import { promises, writeFileSync } from 'fs';
 import { join } from 'path';
 import YAML from 'yaml';
-import { FullSelectorModificator, RowRule, Rule, RuleItem } from './models/rule';
+import { isFullSelector, isFunction } from './models/guards';
+import { FullSelectorModificator, RowRule, Rule, RuleItem, Selector } from './models/rule';
 import { RunnerConfig } from './models/runner';
 import { clearLogger, log } from './services/logger.service';
 import { WORK_DIR, IGNORE_DIR, CONFIG_DIR } from './services/work-dir.service';
@@ -33,10 +34,17 @@ const runner = async (config: RunnerConfig): Promise<void> => {
 			runner(newConfig);
 		} else {
 			// do selectors and rules
-			const selectorName = rule.selectors[0].funcName; // FILE selector
+			const currentSelector = rule.selectors.find((selector) => selector.current); // FILE selector
 			const fileText = await getFileText(fullFilePath);
-			log(`File name: ${fileName}`);
-			await selectors[selectorName](rule, fileName, fileText);
+			if (isFullSelector(currentSelector)) {
+				const selectorFunction = selectors[currentSelector.funcName];
+				if (isFunction(selectorFunction)) {
+					const newFileText = await selectorFunction(rule, fileName, fileText);
+					writeFileSync(fullFilePath, newFileText);
+				}
+			} else {
+				console.error(`This is not a full selector. ${currentSelector}`);
+			}
 		}
 	}
 };
@@ -52,7 +60,7 @@ const getSelectors = async (): Promise<FullSelectorModificator> => {
 const getRule = async (): Promise<Rule> => {
 	const ruleFile = (await promises.readFile(join(CONFIG_DIR, 'rule.yaml'))).toString();
 	const rule: RowRule = YAML.parse(ruleFile);
-	const selectors: RuleItem[] =
+	const selectors: Selector[] =
 		rule.selectors?.map((selector, index) => ({
 			funcName: selector.split(' ')[0],
 			current: index === 0,

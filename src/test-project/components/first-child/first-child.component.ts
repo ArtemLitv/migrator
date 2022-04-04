@@ -1,0 +1,1 @@
+const testString = '<ux-button [type]="'primary'"></ux-button>';
