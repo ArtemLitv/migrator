@@ -7,7 +7,7 @@ const __dirname = filePath.dirname(__filename);
 
 const pathToSrc = '../../src/';
 const pathToTest = join(pathToSrc, 'test-project');
-const pathToLogger = join(pathToSrc, 'logger-messages/logger-messages.txt');
+const pathToLogger = join(pathToSrc, 'logger-messages/logger-messages.md');
 const WORK_DIR = join(__dirname, pathToTest);
 const CONFIG_DIR = join(WORK_DIR, 'migrator-config');
 const IGNORE_DIR = join(CONFIG_DIR, '.migratorignore');
