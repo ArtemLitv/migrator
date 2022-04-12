@@ -25,7 +25,8 @@ const getCurrentSelectorData = (rule: Rule): Selector => {
 
 const next = async (rule: Rule, fileText: string): Promise<string> => {
 	const selectors = await getSelectors();
-	const currentSelector = getCurrentSelectorData(nextSelectorUtil(rule));
+	const nextRule = nextSelectorUtil(rule);
+	const currentSelector = getCurrentSelectorData(nextRule);
 
 	let result = fileText;
 	if (isFullSelector(currentSelector)) {
@@ -33,7 +34,7 @@ const next = async (rule: Rule, fileText: string): Promise<string> => {
 		const selectorFunction = selectors[selectorName];
 		const regexp = selectors[selectorName + '_REGEXP'];
 		if (isFunction(selectorFunction) && isRegExp(regexp)) {
-			result = fileText.replace(regexp, selectorFunction);
+			result = fileText.replace(regexp, selectorFunction(nextRule));
 			logDif(fileText, result);
 		}
 	} else {
