@@ -6,24 +6,28 @@ import { log, logDif } from '../../services/logger.service';
 import { nextSelectorUtil } from '../../utils/nextSelector.util';
 
 export const FILE = async (rule: Rule, fileName: string, fileText: string): Promise<string> => {
-	log(fileName, { isTitle: true });
-	let result = '';
-	const activeSelector = rule.selectors.find((selector) => selector.current);
-	if (!activeSelector) {
-		return fileText;
-	}
-	const fileMask: string = activeSelector.rule.slice(5);
-	const resultMatch = isMatch(fileName, [fileMask]);
+	const activeSelector: Selector = getCurrentSelectorData(rule);
+	const selectorRule: string = activeSelector.rule;
+	const fileMask: string = selectorRule.slice(5);
+	const resultMatch: boolean = isMatch(fileName, [fileMask]);
 
-	log(`↳ ${activeSelector.rule} => ${resultMatch}`, { isCode: true });
+	log(`↳ ${selectorRule} => ${resultMatch}`, { isCode: true });
 	if (!resultMatch) {
 		return fileText;
 	}
 
-	const localRule = nextSelectorUtil(rule);
-	const selectors = await getSelectors();
+	return await next(rule, fileText);
+};
 
-	const currentSelector = localRule.selectors.find((selector) => selector.current);
+const getCurrentSelectorData = (rule: Rule): Selector => {
+	return rule.selectors.find((selector) => selector.current)!;
+};
+
+const next = async (rule: Rule, fileText: string): Promise<string> => {
+	const selectors = await getSelectors();
+	const currentSelector = getCurrentSelectorData(nextSelectorUtil(rule));
+
+	let result = fileText;
 	if (isFullSelector(currentSelector)) {
 		const selectorName = currentSelector.funcName;
 		const selectorFunction = selectors[selectorName];

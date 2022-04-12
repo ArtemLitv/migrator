@@ -27,6 +27,7 @@ const runner = async (config: RunnerConfig): Promise<void> => {
 	const fileNames = await promises.readdir(filePath);
 
 	for (const fileName of fileNames) {
+		log(fileName, { isTitle: true });
 		if (shouldIgnoreFile(fileName, ignoreFiles)) continue;
 		const { fullFilePath, isDirectory } = await getFileInfo(filePath, fileName);
 		if (isDirectory) {
@@ -34,10 +35,11 @@ const runner = async (config: RunnerConfig): Promise<void> => {
 			runner(newConfig);
 		} else {
 			// do selectors and rules
-			const currentSelector = rule.selectors.find((selector) => selector.current); // FILE selector
 			const fileText = await getFileText(fullFilePath);
+			const currentSelector = rule.selectors.find((selector) => selector.current); // FILE selector
 			if (isFullSelector(currentSelector)) {
-				const selectorFunction = selectors[currentSelector.funcName];
+				const selectorName = currentSelector.funcName;
+				const selectorFunction = selectors[selectorName];
 				if (isFunction(selectorFunction)) {
 					const newFileText = await selectorFunction(rule, fileName, fileText);
 					writeFileSync(fullFilePath, newFileText);
