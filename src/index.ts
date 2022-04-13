@@ -13,7 +13,6 @@ const main = async (): Promise<void> => {
 	// imports selectors and modificators
 	const selectors = await getSelectors();
 	const rule: Rule = await getRule();
-	console.log('RULE =', rule);
 	runner({
 		filePath: WORK_DIR,
 		ignoreFiles: ignoreFiles,
@@ -27,13 +26,13 @@ const runner = async (config: RunnerConfig): Promise<void> => {
 	const fileNames = await promises.readdir(filePath);
 
 	for (const fileName of fileNames) {
-		log(fileName, { isTitle: true });
 		if (shouldIgnoreFile(fileName, ignoreFiles)) continue;
 		const { fullFilePath, isDirectory } = await getFileInfo(filePath, fileName);
 		if (isDirectory) {
 			const newConfig = { ...config, filePath: fullFilePath };
 			runner(newConfig);
 		} else {
+			log(fileName, { isTitle: true });
 			// do selectors and rules
 			const fileText = await getFileText(fullFilePath);
 			const currentSelector = rule.selectors.find((selector) => selector.current); // FILE selector

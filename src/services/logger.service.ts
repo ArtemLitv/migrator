@@ -8,7 +8,7 @@ export interface LogOption {
 
 export const log = (message: string, option?: LogOption): void => {
 	if (option?.isCode) {
-		message = `\`${message}\``;
+		message = `\`${message}\`<br>`;
 	}
 	if (option?.isTitle) {
 		message = `# ${message}`;
