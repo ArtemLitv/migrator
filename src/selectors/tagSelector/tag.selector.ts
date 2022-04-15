@@ -8,7 +8,12 @@ export const TAG = (rule: Rule) => (match: string): string => {
 
 	// await next(rule, match);
 	// TODO: тут должен быть вызов либо другого селектора, либо rule. Используется как тестовый вариант
-	return match;
+	return match.toUpperCase();
 };
 
-export const TAG_REGEXP = /button/g;
+
+export const TAG_REGEXP = (rule: Rule): RegExp => {
+	const activeSelector = getCurrentSelectorData(rule);
+	const tag: string = activeSelector.rule.replace('TAG ', '');
+	return new RegExp(tag, 'g');
+};

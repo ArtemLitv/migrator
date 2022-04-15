@@ -12,7 +12,8 @@ export const next = async (rule: Rule, fileText: string): Promise<string> => {
 	if (isFullSelector(currentSelector)) {
 		const selectorName = currentSelector.funcName;
 		const selectorFunction = selectors[selectorName];
-		const regexp = selectors[selectorName + '_REGEXP'];
+		const regexpFunc = selectors[selectorName + '_REGEXP'];
+		const regexp = regexpFunc(nextRule);
 		if (isFunction(selectorFunction) && isRegExp(regexp)) {
 			result = fileText.replace(regexp, selectorFunction(nextRule));
 			logDif(fileText, result);

@@ -1,4 +1,5 @@
 export type anyFunction = (...args: any) => any;
+export type regexpFunction = (...args: any) => RegExp;
 
 export interface RowRule {
 	selectors?: string[];
@@ -20,5 +21,5 @@ export interface RuleItem {
 }
 
 export interface FullSelectorModificator {
-	[key: string]: anyFunction | RegExp;
+	[key: string]: anyFunction | regexpFunction;
 }
