@@ -1,6 +1,6 @@
 selectors:
   - FILE *.component.html
-  - TAG button
+  - TAG ux-button
 rules:
   - CHANGE [kind]="'primary'" TO [type]="'primary'"
   - ADD [kind]="'secondary'"

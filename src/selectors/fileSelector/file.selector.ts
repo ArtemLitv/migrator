@@ -1,7 +1,7 @@
 import { isMatch } from 'matcher';
 import { Rule, Selector } from '../../models/rule';
 import { log } from '../../services/logger.service';
-import { getCurrentSelectorData, next } from '../../utils/nextSelector.util';
+import { getCurrentSelectorData, callNextSelector } from '../../utils/nextSelector.util';
 
 export const FILE = async (rule: Rule, fileName: string, fileText: string): Promise<string> => {
 	// console.log('FILE =', rule);
@@ -15,5 +15,5 @@ export const FILE = async (rule: Rule, fileName: string, fileText: string): Prom
 		return new Promise((resolve) => resolve(fileText));
 	}
 
-	return await next(rule, fileText);
+	return await callNextSelector(rule, fileText);
 };
